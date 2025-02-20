@@ -1,0 +1,39 @@
+version: "0.0.1"
+
+metadata:
+  name: "summarizer-flow"  # or 'the-gist'
+  description: "A brief description of your discussion"       # Flow purpose
+  author: "digit"                              # Must match your account username
+  tags: [discussion-summarizer]                       # Keywords for categorization
+  private: true                                       # Access control setting
+
+# Define the input variables required
+inputs:
+  discussion:                                              # First input parameter
+    type: string                                       # Currently only String format
+    description: "the transcript of the discussion"
+    required: true
+    example: "A discussion, duh"
+  # input2:                                              # Second input parameter
+  #   type: string
+  #   description: "Description of input2"
+  #   required: true
+  #   example: "Example value for input2"
+
+# LLM configuration
+model:
+  provider: "anthropic"                            # e.g., anthropic, openai, meta, etc.
+  name: "claude-3.5-sonnet"                                   # Specific model identifier
+
+# Dataset configuration (Optional)
+# dataset:
+#   source: "author_name/dataset_name"                   # Make sure this dataset exists
+
+# Prompt template configuration
+prompt: |
+  following is a discussion between a team. using its context, generate a concise conclusion as to what the team finalized.
+  {discussion}
+
+# ReadME configuration
+readme: |
+  It's a conversation summariser, it aint no difficult thing to understand
