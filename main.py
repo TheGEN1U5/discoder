@@ -117,9 +117,9 @@ async def deleteproject(ctx):
     try:
         for file in os.listdir(proj_dir):
             os.remove(f"{proj_dir}/{file}")
-        os.rmdir(f"{proj_dir}/{proj_name}")
+        os.rmdir(f"{proj_dir}")
     except OSError:
-        ctx.send(f"no such project {proj_name}")
+        await ctx.send(f"no such project {proj_name}")
     await ctx.send("deleting channel...")
     await asyncio.sleep(2)
     await ctx.channel.delete()
