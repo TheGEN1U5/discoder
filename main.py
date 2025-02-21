@@ -5,6 +5,7 @@ import json
 from workflows import *
 from fetchgit import *
 from token_checker import token_checker
+import os
 
 tokens = token_checker()
 if not tokens[0]:
@@ -69,7 +70,7 @@ async def ask_question(ctx, proj):
             return m.author == ctx.author and m.channel == proj
         
         try:
-            msg = await bot.wait_for('message', check=check, timeout=30.0)
+            msg = await bot.wait_for('message', check=check, timeout=180.0)
             state.answers[questions[state.step]["key"]] = msg.content
             state.step += 1
             await ask_question(ctx, proj)
@@ -85,7 +86,7 @@ async def create_proj(proj, answers):
     readmesum = ""
     try:
         # Your existing code
-        readmesum = await readme_summariser(
+        readmesum = readme_summariser(
             await fetch_files(answers["github"], "README.md")
         )
     except Exception as e:
@@ -141,34 +142,44 @@ async def end_discussion(ctx):
     if not isinstance(ctx.channel, discord.Thread):
         await ctx.send("This command can only be used in a thread.")
         return
+    global proj_name 
+    global proj_dir
     proj_name = ctx.channel.parent.name.replace("-", "_")
     proj_dir = f"projects/{ctx.guild.id}/{proj_name}"
-    # getting messages
+    new_discussion = await update_json(ctx, await extract_messages(ctx))
+    with open(f"{proj_dir}/{proj_name}.json", "r") as f:
+        github_link = json.load(f)["github"]
+    tree = await fetch_directory_tree(github_link)
+    files = files_summariser(tree, new_discussion["dict"])
+    repo_content = await fetch_files(github_link, set(files))
+    codeblock = codeblocks_creator(tree, repo_content, new_discussion["dict"])
+    await ctx.send(codeblock)
+    
+# getting messages
+async def extract_messages(ctx):
     conversation = ""
     async for message in ctx.channel.history(limit=None, oldest_first=True):
         if (message.content != "?enddiscussion" and not message.author.bot):
             conversation += f"{message.author.display_name}:\t{message.content}\n"
-    discussion_summary = discussion_summariser(conversation)
-    await ctx.send(f"Here is what I understood from your conversation:\n```{discussion_summary}```")
-    await ctx.send("What else would you like to add more?")
-    def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
-    try:
-        msg = await bot.wait_for('message', check=check, timeout=30.0)
-    except asyncio.TimeoutError:
-        await ctx.send("You took too long to respond!")
-    discussion_summary += msg.content
-    await ctx.send(f"Final summary:\n ```{discussion_summary}```")
-    discussion = {
+    discussion = discussion_summariser(conversation)
+    await ctx.send(f"Here is what I understood from your conversation:\n```{discussion[1]}```")
+    return discussion
+
+# updating project json file 
+async def update_json(ctx, discussion):
+    new_discussion = {
         "id": ctx.channel.id,
         "name": proj_name,
-        "conversation": discussion_summary
+        "summary": discussion[1],
+        "dict": discussion[0]
     }
     with open(f"{proj_dir}/{proj_name}.json", "r+") as f:
         data = json.load(f)
-        data["discussions"].append(discussion)
+        data["discussions"].append(new_discussion)
         f.seek(0)        # <--- should reset file position to the beginning.
         json.dump(data, f, indent=4)
-        f.truncate() 
+        f.truncate()
+    return new_discussion
+    
 
 bot.run(discord_token)
