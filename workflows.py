@@ -1,9 +1,12 @@
 from mira_sdk import MiraClient, Flow, File
-from dotenv import load_dotenv
-import os
+from token_checker import token_checker
 
-load_dotenv()
-client = MiraClient(config={"API_KEY": os.getenv("MIRA_API_KEY")})
+tokens = token_checker()
+if not tokens[0]:
+	print("Please enter your MIRA API Key manually in your .env file.")
+	__import__('sys').exit(0)
+mira_token = tokens[2]
+client = MiraClient(config={"API_KEY": mira_token})
 
 def discussion_summariser(discussion:str=''):
     summariser = Flow(source="flows/discussion-summariser-flow.yaml")

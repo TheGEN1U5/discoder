@@ -1,15 +1,18 @@
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 import asyncio
 import json
 from workflows import *
 from fetchgit import *
+from token_checker import token_checker
 
-import os
+tokens = token_checker()
+if not tokens[0]:
+	print("Please enter your Discord token manually in your .env file.")
+	__import__('sys').exit(1)
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+discord_token = tokens[1]
+
 
 intents = discord.Intents.default()
 intents.members = True
@@ -168,4 +171,4 @@ async def end_discussion(ctx):
         json.dump(data, f, indent=4)
         f.truncate() 
 
-bot.run(TOKEN)
+bot.run(discord_token)
