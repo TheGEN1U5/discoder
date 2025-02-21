@@ -5,12 +5,15 @@ import os
 load_dotenv()
 client = MiraClient(config={"API_KEY": os.getenv("MIRA_API_KEY")})
 
-def discussion_summariser(discussion=''):
-    summarizer_flow = Flow(source="flows/summarizer-flow.yaml")
-    input_dict = {"discussion" : discussion}
-    response = client.flow.test(summarizer_flow, input_dict)
+def discussion_summariser(discussion=""):
+    summariser = Flow(source="flows/discussion-summariser-flow.yaml")
+    input_dict = {"discussion": discussion}
+    response = client.flow.test(summariser, input_dict)
+    output = response["result"].split("```")
+    op_dict = output[1].replace("json", "")
+    op_summary = output[2]
+    return tuple([op_dict, op_summary])
 
-    return response['result']
 
-async def readme_summariser(readme):
+async def readme_summariser(readme=''):
     return readme
