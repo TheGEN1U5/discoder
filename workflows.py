@@ -17,7 +17,7 @@ def discussion_summariser(discussion:str=''):
     op_summary = output[2]
     return tuple([op_dict, op_summary])
 
-async def readme_summariser(readme:str=''):
+def readme_summariser(readme:str=''):
     summariser = Flow(source="flows/readme-summariser-flow.yaml")
     input_dict = {"readme": readme}
     response = client.flow.test(summariser, input_dict)
@@ -28,3 +28,6 @@ def files_summariser(tree:str='', json_features:str=''):
     input_dict = {"tree" : tree, "json_features": json_features}
     response = client.flow.test(summariser, input_dict)
     return response['result']
+
+def codeblocks_creator(file_paths:list=[], file_contents:list=[], json_features:str=''):
+    return
