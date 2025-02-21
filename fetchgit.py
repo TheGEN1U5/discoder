@@ -19,6 +19,4 @@ async def fetch_files(github_link, names):
             content += result[2]
     return content
 
-# print(fetch_files("https://github.com/SaiyamLohia/Cloud_Gardening", ["*/RainCloud.cs", "*/Flower.cs"]))
-# print(fetch_files("https://github.com/SaiyamLohia/Cloud_Gardening", "*/Flower.cs"))
 
