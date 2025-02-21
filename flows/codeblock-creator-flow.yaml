@@ -1,10 +1,10 @@
 version: "0.0.1"
 
 metadata:
-  name: "files-summariser-flow"
-  description: "A summary of which files you should edit"
+  name: "codeblock-creator-flow"
+  description: "CodeBlocks Generator"
   author: "digit"
-  tags: [files-summariser]
+  tags: [codeblocks-creator]
   private: true
 
 inputs:
@@ -25,7 +25,7 @@ model:
 
 prompt: |
   attached are the directory tree structure of a project repository and a JSON of characteristics of the feature to be added to the project. 
-  output-format: should contain ONLY all files (in format path/to/files) that need to be edited or created in seperated by comma (,)
+  output-format: should contain ONLY all files that need to be edited or created in a python list format and the elements should be path/to/files
   {tree}
   {json_features}
 
