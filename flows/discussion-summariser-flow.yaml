@@ -1,0 +1,27 @@
+version: "0.0.1"
+
+metadata:
+  name: "discussion-summariser-flow"
+  description: "A summary of your discussion"
+  author: "digit"
+  tags: [discussion-summariser]
+  private: true
+
+inputs:
+  discussion:
+    type: string
+    description: "the transcript of the discussion"
+    required: true
+    example: "Example"
+
+model:
+  provider: "openai"
+  name: "gpt-4o"
+
+prompt: |
+  following is a discussion between a team. using its context, generate a concise conclusion as to what the team finalized.
+  create a JSON file format 'feature' : 'value or description' for the same. the ouput should only contain the JSON and the summary.
+  {discussion}
+
+readme: |
+  It's a discussion summariser.
