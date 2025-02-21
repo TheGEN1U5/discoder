@@ -130,14 +130,14 @@ async def startdiscussion(ctx, name):
     proj_dir = f"projects/{ctx.guild.id}/{proj_name}"
     message = await ctx.send(f"Okay, let's start working on {name}")
     thread = await message.create_thread(name=f"New discussion: {name}")
-    await thread.send("hello there you can start your discussion now. I'll quietely monitor it in the background.")
+    await thread.send("hello there you can start your discussion now. I'll quietly monitor it in the background.")
     
 
 @bot.command(name='enddiscussion')
 async def end_discussion(ctx):
     if not isinstance(ctx.channel, discord.Thread):
         await ctx.send("This command can only be used in a thread.")
-        return 0
+        return
     proj_name = ctx.channel.parent.name.replace("-", "_")
     proj_dir = f"projects/{ctx.guild.id}/{proj_name}"
     # getting messages
