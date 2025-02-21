@@ -1,0 +1,27 @@
+version: "0.0.1"
+
+metadata:
+  name: "readme-summariser-flow"
+  description: "A summary of your README.md"
+  author: "digit"
+  tags: [readme-summariser]
+  private: true
+
+inputs:
+  readme:
+    type: string
+    description: "README file of your project"
+    required: true
+    example: "Example"
+
+model:
+  provider: "openai"
+  name: "gpt-4o"
+
+prompt: |
+  write a summary using the attached readme for an AI like you to read and be able to decipher the coding principles, working principles, etc, so that it can add code that it writes to the right places.
+  {readme_text}
+
+
+readme: |
+  It's a readme summariser.

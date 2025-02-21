@@ -1,0 +1,31 @@
+version: "0.0.1"
+
+metadata:
+  name: "files-summariser-flow"
+  description: "A summary of which files you should edit"
+  author: "digit"
+  tags: [files-summariser]
+  private: true
+
+inputs:
+  tree:
+    type: string
+    description: "File Tree of your project"
+    required: true
+    example: "Example"
+  json_features:
+    type: string
+    description: "JSON of features"
+    required: true
+    example: "Example"
+
+model:
+  provider: "openai"
+  name: "gpt-4o"
+
+prompt: |
+  
+
+
+readme: |
+  It's a code helper?
