@@ -15,6 +15,13 @@ def discussion_summariser(discussion:str=''):
     output = response["result"].split("```")
     op_dict = output[1].replace("json", "")
     op_summary = output[2]
+    
+    if(op_summary.strip().startswith('Summary:')):
+        op_summary = op_summary.split('Summary:')[1]
+    elif(op_summary.strip().startswith('**Summary:**')):
+        op_summary = op_summary.split('**Summary:**')[1]
+    
+    op_summary = op_summary.lstrip()
     return tuple([op_dict, op_summary])
 
 def readme_summariser(readme:str=''):
@@ -31,7 +38,7 @@ def files_summariser(tree:str='', json_features:str='', readme_summary:str='', t
     # output_list = list(output_string)
     return output_list
 
-def codeblocks_creator(tree:str='', file_paths:list=[], file_contents:str='', json_features:str='', tech_stack:str=''):
+def codeblock_creator(tree:str='', file_paths:list=[], file_contents:str='', json_features:str='', tech_stack:str=''):
     summariser = Flow(source="flows/codeblocks-creator-flow.yaml")
     input_dict = {"tree" : tree, "file_paths": str(file_paths), "file_contents": file_contents, "json_features": json_features, "tech_stack": tech_stack}
     response = client.flow.test(summariser, input_dict)

@@ -152,7 +152,7 @@ async def end_discussion(ctx):
     tree = await fetch_directory_tree(github_link)
     files = files_summariser(tree, new_discussion["dict"])
     repo_content = await fetch_files(github_link, set(files))
-    codeblock = codeblocks_creator(tree, repo_content, new_discussion["dict"])
+    codeblock = codeblock_creator(tree, repo_content, new_discussion["dict"])
     await ctx.send(codeblock)
     
 # getting messages
