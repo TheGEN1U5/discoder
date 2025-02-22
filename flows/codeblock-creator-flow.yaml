@@ -13,9 +13,24 @@ inputs:
     description: "File Tree of your project"
     required: true
     example: "Example"
+  file_paths:
+    type: string
+    description: "List of File Paths"
+    required: true
+    example: "Example"
+  file_contents:
+    type: string
+    description: "Contents of Files to be updated"
+    required: true
+    example: "Example"
   json_features:
     type: string
     description: "JSON of features"
+    required: true
+    example: "Example"
+  tech_stack:
+    type: string
+    description: "Tech Stack of the project"
     required: true
     example: "Example"
 
@@ -24,10 +39,13 @@ model:
   name: "gpt-4o"
 
 prompt: |
-  attached are the directory tree structure of a project repository and a JSON of characteristics of the feature to be added to the project. 
-  output-format: should contain ONLY all files that need to be edited or created in a python list format and the elements should be path/to/files
+  an AI-created JSON file is attached which lists the characteristics of a feature to be added along with file structure of the repository of the project, and the files that need to be edited or created.
+  update attached codeblocks to achieve this, and generate a new file if it doesnt exist in the tree. Align your code strictly with the tech stack of the project thats also attached
   {tree}
+  {file_paths}
+  {file_contents}
   {json_features}
+  {tech_stack}
 
 readme: |
   It's a code helper?

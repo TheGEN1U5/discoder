@@ -19,9 +19,8 @@ model:
   name: "gpt-4o"
 
 prompt: |
-  write a summary using the attached readme for an AI like you to read and be able to decipher the coding principles, working principles, etc, so that it can add code that it writes to the right places.
-  {readme_text}
-
+  summarize the key points from the attached readme.
+  {readme}
 
 readme: |
   It's a readme summariser.

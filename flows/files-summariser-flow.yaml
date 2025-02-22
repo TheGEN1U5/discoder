@@ -18,16 +18,29 @@ inputs:
     description: "JSON of features"
     required: true
     example: "Example"
+  readme_summary:
+    type: string
+    description: "Summary of the README.md of the project"
+    required: true
+    example: "Example"
+  tech_stack:
+    type: string
+    description: "Tech Stack of the project"
+    required: true
+    example: "Example"
 
 model:
   provider: "openai"
   name: "gpt-4o"
 
 prompt: |
-  attached are the directory tree structure of a project repository and a JSON of characteristics of the feature to be added to the project. 
+  attached are the directory tree structure of a project repository and a JSON of characteristics of the feature to be added to the project.
+  a summary of the readme of the project and the tech stack of the project are attached for context.
   output-format: should contain ONLY all files (in format path/to/files) that need to be edited or created in seperated by comma (,)
   {tree}
   {json_features}
+  {tech_stack}
+  {readme_summary}
 
 readme: |
   It's a code helper?

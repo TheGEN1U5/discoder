@@ -23,13 +23,16 @@ def readme_summariser(readme:str=''):
     response = client.flow.test(summariser, input_dict)
     return response['result']
 
-def files_summariser(tree:str='', json_features:str=''):
+def files_summariser(tree:str='', json_features:str='', readme_summary:str='', tech_stack:str=''):
     summariser = Flow(source="flows/files-summariser-flow.yaml")
-    input_dict = {"tree" : tree, "json_features": json_features}
+    input_dict = {"tree" : tree, "json_features": json_features, "readme_summary":  readme_summary, "tech_stack": tech_stack}
     response = client.flow.test(summariser, input_dict)
     output_list = response['result'].split(', ')
     # output_list = list(output_string)
     return output_list
 
-def codeblocks_creator(tree:str='', file_contents:str='', json_features:str=''):
-    return tree+file_contents+json_features
+def codeblocks_creator(tree:str='', file_paths:list=[], file_contents:str='', json_features:str='', tech_stack:str=''):
+    summariser = Flow(source="flows/codeblocks-creator-flow.yaml")
+    input_dict = {"tree" : tree, "file_paths": str(file_paths), "file_contents": file_contents, "json_features": json_features, "tech_stack": tech_stack}
+    response = client.flow.test(summariser, input_dict)
+    return response['result']
