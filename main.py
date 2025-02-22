@@ -6,6 +6,12 @@ from workflows import *
 from fetchgit import *
 from token_checker import token_checker
 import os
+# import logging
+
+# # remove duplicate logging
+# logging.basicConfig(level=logging.WARNING)  # Suppress INFO logs from root logger
+# discord_logger = logging.getLogger('discord')
+# discord_logger.propagate = False  # Prevent passing logs to root logger
 
 tokens = token_checker()
 if not tokens[0]:
@@ -104,7 +110,7 @@ async def create_proj(proj, answers):
         }
         with open(f"projects/{proj.guild.id}/{proj_name}/{proj_name}.json", "w") as f: 
             json.dump(proj_dict, f, indent=4)
-        await proj.send("```json\n" + str(proj_dict) + "\n```\n")
+        await proj.send(proj_dict["summary"])
     except FileExistsError:
         await proj.send("Project with same name already exists in this channel", str(e))
         return -1
@@ -153,7 +159,8 @@ async def end_discussion(ctx):
     files = files_summariser(tree, new_discussion["dict"])
     repo_content = await fetch_files(github_link, set(files))
     codeblock = codeblocks_creator(tree, repo_content, new_discussion["dict"])
-    await ctx.send(codeblock)
+    print(codeblock)
+    # await ctx.send(codeblock)
     
 # getting messages
 async def extract_messages(ctx):

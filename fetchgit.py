@@ -8,8 +8,7 @@ async def fetch_directory_tree(github_link):
 
 
 async def fetch_files(github_link, names):
-    content = ""
-    content = await ingest_async(github_link, 50*1024*1024, names)[2]
-    return content
+    content = await ingest_async(github_link, 50*1024*1024, names)
+    return content[2]
 
 
