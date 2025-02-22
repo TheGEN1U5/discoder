@@ -16,10 +16,12 @@ def discussion_summariser(discussion:str=''):
     op_dict = output[1].replace("json", "")
     op_summary = output[2]
     
-    if(op_summary.strip().startswith('Summary:')):
-        op_summary = op_summary.split('Summary:')[1]
-    elif(op_summary.strip().startswith('**Summary:**')):
-        op_summary = op_summary.split('**Summary:**')[1]
+    if(op_summary.strip().startswith('Summary: ')):
+        op_summary = op_summary.split('Summary: ')[1]
+    elif(op_summary.strip().startswith('**Summary:** ')):
+        op_summary = op_summary.split('**Summary:** ')[1]
+    elif(op_summary.strip().startswith('**Summary**: ')):
+        op_summary = op_summary.split('**Summary**: ')[1]
     
     op_summary = op_summary.lstrip()
     return tuple([op_dict, op_summary])
