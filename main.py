@@ -6,6 +6,7 @@ from workflows import *
 from fetchgit import *
 from token_checker import token_checker
 import os
+from helperf import split_preserve_format
 # import logging
 
 # # remove duplicate logging
@@ -155,12 +156,19 @@ async def end_discussion(ctx):
     new_discussion = await update_json(ctx, await extract_messages(ctx))
     with open(f"{proj_dir}/{proj_name}.json", "r") as f:
         github_link = json.load(f)["github"]
+    await ctx.send("### Hold tight!\nWe are converting your conversations to code")
     tree = await fetch_directory_tree(github_link)
+    await ctx.send("...")
     files = files_summariser(tree, new_discussion["dict"])
+    await ctx.send("...")
     repo_content = await fetch_files(github_link, set(files))
+    await ctx.send("...")
     codeblock = codeblocks_creator(tree, repo_content, new_discussion["dict"])
-    print(codeblock)
-    # await ctx.send(codeblock)
+    await ctx.send("...")
+    # print(codeblock)
+    await ctx.send("...")
+    await ctx.send("# Suggested Solutions:")
+    await send_chunked(ctx, codeblock)
     
 # getting messages
 async def extract_messages(ctx):
@@ -169,7 +177,8 @@ async def extract_messages(ctx):
         if (message.content != "?enddiscussion" and not message.author.bot):
             conversation += f"{message.author.display_name}:\t{message.content}\n"
     discussion = discussion_summariser(conversation)
-    await ctx.send(f"Here is what I understood from your conversation:\n```{discussion[1]}```")
+    await ctx.send(f"## Here is what I understood from your conversation:")
+    await ctx.send(discussion[1])
     return discussion
 
 # updating project json file 
@@ -187,6 +196,14 @@ async def update_json(ctx, discussion):
         json.dump(data, f, indent=4)
         f.truncate()
     return new_discussion
+
+async def send_chunked(ctx, content):
+    """Sends messages in chunks with proper error handling"""
+    for chunk in split_preserve_format(content, 1999):
+        try:
+            await ctx.send(chunk)
+        except discord.HTTPException as e:
+            await ctx.send(f"Error sending message: {e}")
     
 
 bot.run(discord_token)
