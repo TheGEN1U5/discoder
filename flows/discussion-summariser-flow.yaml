@@ -20,7 +20,7 @@ model:
 
 prompt: |
   following is a discussion between a team. using its context, generate a conclusive summary of the same
-  create a JSON file format 'feature' : 'value or description' for the same. the ouput should only contain the JSON and the summary.
+  create a JSON file format 'feature' : 'value or description' for the same, make suree the key 'title' storoes the feature title. the ouput should only contain the JSON and the summary.
   {discussion}
 
 readme: |
