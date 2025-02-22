@@ -39,7 +39,8 @@ def files_summariser(tree:str='', json_features:str='', readme_summary:str='', t
     return output_list
 
 def codeblock_creator(tree:str='', file_paths:list=[], file_contents:str='', json_features:str='', tech_stack:str=''):
-    summariser = Flow(source="flows/codeblocks-creator-flow.yaml")
+    summariser = Flow(source="flows/codeblock-creator-flow.yaml")
+    
     input_dict = {"tree" : tree, "file_paths": str(file_paths), "file_contents": file_contents, "json_features": json_features, "tech_stack": tech_stack}
     response = client.flow.test(summariser, input_dict)
-    return response['result']
+    return response['result'].replace("##", "#")
