@@ -34,7 +34,13 @@ async def on_ready():
     print(f'We have logged in as {bot.user}')
 
 @bot.command(name='createproject')
-async def startproject(ctx, name):
+async def startproject(ctx, name: str = None):
+
+    if name is None:
+        await ctx.send("Please enter a name for the project as an argument after the command.")
+        await ctx.send("Usage:\n `?createproject [name_of_the_project]`")
+        return
+
     channel_name = "discoder-" + name.replace(" ", "-").lower()
     proj = await ctx.guild.create_text_channel(channel_name)
     await proj.send(f"Okay, let's intialize the project: {name}")
@@ -47,6 +53,15 @@ async def startproject(ctx, name):
         await proj.send("deleting channel...")
         await asyncio.sleep(5)
         await proj.delete()
+
+@startproject.error
+async def startproject_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"Usage: `!createproject <project_name>` - Please provide a project name.")
+    elif isinstance(error, commands.BadArgument):
+        await ctx.send("Invalid argument. Make sure the project name is a valid string.")
+    else:
+        await ctx.send(f"An unexpected error occurred: {error}")
 
 async def ask_question(ctx, proj):
     user_id = ctx.author.id
