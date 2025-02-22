@@ -6,6 +6,13 @@ from workflows import *
 from fetchgit import *
 from token_checker import token_checker
 import os
+from helperf import split_preserve_format
+# import logging
+
+# # remove duplicate logging
+# logging.basicConfig(level=logging.WARNING)  # Suppress INFO logs from root logger
+# discord_logger = logging.getLogger('discord')
+# discord_logger.propagate = False  # Prevent passing logs to root logger
 
 tokens = token_checker()
 if not tokens[0]:
@@ -34,7 +41,13 @@ async def on_ready():
     print(f'We have logged in as {bot.user}')
 
 @bot.command(name='createproject')
-async def startproject(ctx, name):
+async def startproject(ctx, name: str = None):
+
+    if name is None:
+        await ctx.send("Please enter a name for the project as an argument after the command.")
+        await ctx.send("Usage:\n `?createproject [name_of_the_project]`")
+        return
+
     channel_name = "discoder-" + name.replace(" ", "-").lower()
     proj = await ctx.guild.create_text_channel(channel_name)
     await proj.send(f"Okay, let's intialize the project: {name}")
@@ -47,6 +60,15 @@ async def startproject(ctx, name):
         await proj.send("deleting channel...")
         await asyncio.sleep(5)
         await proj.delete()
+
+@startproject.error
+async def startproject_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"Usage: `!createproject <project_name>` - Please provide a project name.")
+    elif isinstance(error, commands.BadArgument):
+        await ctx.send("Invalid argument. Make sure the project name is a valid string.")
+    else:
+        await ctx.send(f"An unexpected error occurred: {error}")
 
 async def ask_question(ctx, proj):
     user_id = ctx.author.id
@@ -104,7 +126,7 @@ async def create_proj(proj, answers):
         }
         with open(f"projects/{proj.guild.id}/{proj_name}/{proj_name}.json", "w") as f: 
             json.dump(proj_dict, f, indent=4)
-        await proj.send("```json\n" + str(proj_dict) + "\n```\n")
+        await proj.send(proj_dict["summary"])
     except FileExistsError:
         await proj.send("Project with same name already exists in this channel", str(e))
         return -1
@@ -149,11 +171,20 @@ async def end_discussion(ctx):
     new_discussion = await update_json(ctx, await extract_messages(ctx))
     with open(f"{proj_dir}/{proj_name}.json", "r") as f:
         github_link = json.load(f)["github"]
+    await ctx.send("### Hold tight!\nWe are converting your conversations to code")
     tree = await fetch_directory_tree(github_link)
+    await ctx.send("...")
     files = files_summariser(tree, new_discussion["dict"])
+    await ctx.send("...")
     repo_content = await fetch_files(github_link, set(files))
+
+    await ctx.send("...")
     codeblock = codeblock_creator(tree, repo_content, new_discussion["dict"])
-    await ctx.send(codeblock)
+    await ctx.send("...")
+    # print(codeblock)
+    await ctx.send("...")
+    await ctx.send("# Suggested Solutions:")
+    await send_chunked(ctx, codeblock)
     
 # getting messages
 async def extract_messages(ctx):
@@ -162,7 +193,8 @@ async def extract_messages(ctx):
         if (message.content != "?enddiscussion" and not message.author.bot):
             conversation += f"{message.author.display_name}:\t{message.content}\n"
     discussion = discussion_summariser(conversation)
-    await ctx.send(f"Here is what I understood from your conversation:\n```{discussion[1]}```")
+    await ctx.send(f"## Here is what I understood from your conversation:")
+    await ctx.send(discussion[1])
     return discussion
 
 # updating project json file 
@@ -180,6 +212,14 @@ async def update_json(ctx, discussion):
         json.dump(data, f, indent=4)
         f.truncate()
     return new_discussion
+
+async def send_chunked(ctx, content):
+    """Sends messages in chunks with proper error handling"""
+    for chunk in split_preserve_format(content, 1999):
+        try:
+            await ctx.send(chunk)
+        except discord.HTTPException as e:
+            await ctx.send(f"Error sending message: {e}")
     
 
 bot.run(discord_token)
