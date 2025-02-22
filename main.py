@@ -178,7 +178,7 @@ async def end_discussion(ctx):
     await ctx.send("...")
     repo_content = await fetch_files(github_link, set(files))
     await ctx.send("...")
-    codeblock = codeblocks_creator(tree, repo_content, new_discussion["dict"])
+    codeblock = codeblock_creator(tree, repo_content, new_discussion["dict"])
     await ctx.send("...")
     # print(codeblock)
     await ctx.send("...")
