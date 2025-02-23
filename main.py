@@ -170,12 +170,12 @@ async def end_discussion(ctx):
     global proj_stack
     proj_name = ctx.channel.parent.name.replace("-", "_")
     proj_dir = f"projects/{ctx.guild.id}/{proj_name}"
-    new_discussion = await update_json(ctx, await extract_messages(ctx))
     with open(f"{proj_dir}/{proj_name}.json", "r") as f:
         data = json.load(f)
         github_link = data["github"]
         proj_stack = data["stack"]
         proj_summary = data["summary"]
+    new_discussion = await update_json(ctx, await extract_messages(ctx))
     await ctx.send("### Hold tight!\nWe are converting your conversations to code")
     tree = await fetch_directory_tree(github_link)
     await ctx.send("...")
