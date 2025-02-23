@@ -13,15 +13,27 @@ inputs:
     description: "the transcript of the discussion"
     required: true
     example: "Example"
+  readme_summary:
+    type: string
+    description: "a summary of the readme"
+    required: true
+    example: "Example"
+  tech_stack:
+    type: string
+    description: "Tech Stack of the Project"
+    required: true
+    example: "Example"
 
 model:
   provider: "openai"
   name: "gpt-4o"
 
 prompt: |
-  following is a discussion between a team. using its context, generate a conclusive summary of the same
-  create a JSON file format 'feature' : 'value or description' for the same, make suree the key 'title' storoes the feature title. the ouput should only contain the JSON and the summary.
-  {discussion}
+  following is a discussion between a team. using the context of a summary of the project's README and the tech stack, generate a conclusive summary of the same
+  create a JSON file format 'feature' : 'value or description' for the same, make sure the key 'title' stores the feature title. the output should only contain the JSON and the summary.
+  readme summary: {readme_summary}
+  tech_stack: {tech_stack}
+  conversation: {discussion}
 
 readme: |
   It's a discussion summariser.

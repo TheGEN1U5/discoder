@@ -182,20 +182,28 @@ async def end_discussion(ctx):
         return
     global proj_name 
     global proj_dir
+    global proj_summary
+    global proj_stack
     proj_name = ctx.channel.parent.name.replace("-", "_")
     proj_dir = f"projects/{ctx.guild.id}/{proj_name}"
     new_discussion = await update_json(ctx, await extract_messages(ctx))
     with open(f"{proj_dir}/{proj_name}.json", "r") as f:
-        github_link = json.load(f)["github"]
+        data = json.load(f)
+        github_link = data["github"]
+        proj_stack = data["stack"]
+        proj_summary = data["summary"]
     await ctx.send("### Hold tight!\nWe are converting your conversations to code")
     tree = await fetch_directory_tree(github_link)
     await ctx.send("...")
-    files = files_summariser(tree, new_discussion["dict"])
-    await ctx.send("...")
+    files = files_summariser(tree, new_discussion["dict"], proj_summary, proj_stack)
+    msg = "We are looking to modify these files from your Github repository: \n"
+    for file in files:
+        msg += files+'\n'
+    await ctx.send(msg)
     repo_content = await fetch_files(github_link, set(files))
 
     await ctx.send("...")
-    codeblock = codeblock_creator(tree, repo_content, new_discussion["dict"])
+    codeblock = codeblock_creator(tree, files, repo_content, new_discussion["dict"], proj_stack, proj_summary)
     await ctx.send("...")
     # print(codeblock)
     await ctx.send("...")
@@ -208,7 +216,7 @@ async def extract_messages(ctx):
     async for message in ctx.channel.history(limit=None, oldest_first=True):
         if (message.content != "?enddiscussion" and not message.author.bot):
             conversation += f"{message.author.display_name}:\t{message.content}\n"
-    discussion = discussion_summariser(conversation)
+    discussion = discussion_summariser(conversation, proj_summary, proj_stack)
     await ctx.send(f"## Here is what I understood from your conversation:")
     await ctx.send(discussion[1])
     return discussion
