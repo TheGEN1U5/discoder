@@ -151,12 +151,28 @@ async def deleteproject(ctx):
     await ctx.channel.delete()
 
 @bot.command()
-async def startdiscussion(ctx, name):
+async def startdiscussion(ctx, name : str = None):
+
+    if name is None:
+        await ctx.send("Please enter a title for the discussion as an argument after the command.")
+        await ctx.send("Usage:\n `?startdiscussion [discussion_title]`")
+        return
+
     proj_name = ctx.channel.name.replace("-", "_")
     proj_dir = f"projects/{ctx.guild.id}/{proj_name}"
     message = await ctx.send(f"Okay, let's start working on {name}")
     thread = await message.create_thread(name=f"New discussion: {name}")
     await thread.send("hello there you can start your discussion now. I'll quietly monitor it in the background.")
+
+
+@startdiscussion.error
+async def startdiscussion_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"Usage: `!startdiscussion <discussion_name>` - Please provide a title for discussion.")
+    elif isinstance(error, commands.BadArgument):
+        await ctx.send("Invalid argument. Make sure the project name is a valid string.")
+    else:
+        await ctx.send(f"An unexpected error occurred: {error}")
     
 
 @bot.command(name='enddiscussion')
