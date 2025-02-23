@@ -99,10 +99,10 @@ async def ask_question(ctx, proj):
         except asyncio.TimeoutError:
             await proj.send("You took too long to respond!")
     else:
-        success = await create_proj(proj, state.answers)
+        success = await create_proj(ctx, proj, state.answers)
         return success
 
-async def create_proj(proj, answers):
+async def create_proj(ctx, proj, answers):
     # create projects/id directory
     proj_name = proj.name.replace("-", "_")
     readmesum = ""
@@ -126,7 +126,7 @@ async def create_proj(proj, answers):
         }
         with open(f"projects/{proj.guild.id}/{proj_name}/{proj_name}.json", "w") as f: 
             json.dump(proj_dict, f, indent=4)
-        await proj.send(proj_dict["summary"])
+        await send_chunked(proj, proj_dict["summary"])
     except FileExistsError:
         await proj.send("Project with same name already exists in this channel", str(e))
         return -1
@@ -239,7 +239,7 @@ async def update_json(ctx, discussion):
 
 async def send_chunked(ctx, content):
     """Sends messages in chunks with proper error handling"""
-    for chunk in split_preserve_format(content, 1999):
+    for chunk in split_preserve_format(content, 1900):
         try:
             await ctx.send(chunk)
         except discord.HTTPException as e:
