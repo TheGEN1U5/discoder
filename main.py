@@ -198,7 +198,7 @@ async def end_discussion(ctx):
     files = files_summariser(tree, new_discussion["dict"], proj_summary, proj_stack)
     msg = "We are looking to modify these files from your Github repository: \n"
     for file in files:
-        msg += files+'\n'
+        msg += '`'+file+'`'+'\n'
     await ctx.send(msg)
     repo_content = await fetch_files(github_link, set(files))
 
