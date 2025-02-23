@@ -36,11 +36,11 @@ model:
 prompt: |
   attached are the directory tree structure of a project repository and a JSON of characteristics of the feature to be added to the project.
   a summary of the readme of the project and the tech stack of the project are attached for context.
-  output-format: should contain ONLY all files (in format path/to/files) that need to be edited or created in seperated by comma (,)
-  {tree}
-  {json_features}
-  {tech_stack}
-  {readme_summary}
+  output-format: should contain only all files (in format path/to/files) that need to be edited or created in seperated by comma (,) in order to implement the feature
+  Repository Structure: {tree}
+  json: {json_features}
+  tech stack: {tech_stack}
+  readme summary: {readme_summary}
 
 readme: |
   It's a code helper?
