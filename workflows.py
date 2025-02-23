@@ -22,6 +22,18 @@ def discussion_summariser(discussion:str='', readme_summary:str='', tech_stack:s
         op_summary = op_summary.split('**Summary:** ')[1]
     elif(op_summary.strip().startswith('**Summary**: ')):
         op_summary = op_summary.split('**Summary**: ')[1]
+    elif(op_summary.strip().startswith('Summary: \n')):
+        op_summary = op_summary.split('Summary: \n')[1]
+    elif(op_summary.strip().startswith('**Summary:** \n')):
+        op_summary = op_summary.split('**Summary:** \n')[1]
+    elif(op_summary.strip().startswith('**Summary**: \n')):
+        op_summary = op_summary.split('**Summary**: \n')[1]
+    elif(op_summary.strip().startswith('Summary:\n')):
+        op_summary = op_summary.split('Summary:\n')[1]
+    elif(op_summary.strip().startswith('**Summary:**\n')):
+        op_summary = op_summary.split('**Summary:**\n')[1]
+    elif(op_summary.strip().startswith('**Summary**:\n')):
+        op_summary = op_summary.split('**Summary**:\n')[1]
     
     op_summary = op_summary.lstrip()
     return tuple([op_dict, op_summary])
@@ -36,7 +48,7 @@ def files_summariser(tree:str='', json_features:str='', readme_summary:str='', t
     summariser = Flow(source="flows/files-summariser-flow.yaml")
     input_dict = {"tree" : tree, "json_features": json_features, "readme_summary":  readme_summary, "tech_stack": tech_stack}
     response = client.flow.test(summariser, input_dict)
-    output_list = response['result'].split(', ')
+    output_list = response['result'].replace('`', '').split(', ')
     # output_list = list(output_string)
     return output_list
 
