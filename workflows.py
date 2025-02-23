@@ -8,9 +8,9 @@ if not tokens[0]:
 mira_token = tokens[2]
 client = MiraClient(config={"API_KEY": mira_token})
 
-def discussion_summariser(discussion:str='', readme:str='', tech_stack:str=''):
+def discussion_summariser(discussion:str='', readme_summary:str='', tech_stack:str=''):
     summariser = Flow(source="flows/discussion-summariser-flow.yaml")
-    input_dict = {"discussion": discussion, "readme" : readme, "tech_stack": tech_stack}
+    input_dict = {"discussion": discussion, "readme_summary" : readme_summary, "tech_stack": tech_stack}
     response = client.flow.test(summariser, input_dict)
     output = response["result"].split("```")
     op_dict = output[1].replace("json", "")
