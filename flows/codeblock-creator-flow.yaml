@@ -33,6 +33,11 @@ inputs:
     description: "Tech Stack of the project"
     required: true
     example: "Example"
+  readme_summary:
+    type: string
+    description: "a summary of the readme"
+    required: true
+    example: "Example"
 
 model:
   provider: "openai"
@@ -41,11 +46,12 @@ model:
 prompt: |
   an AI-created JSON file is attached which lists the characteristics of a feature to be added along with file structure of the repository of the project, and the files that need to be edited or created.
   update attached codeblocks to achieve this, and generate a new file if it doesnt exist in the tree. Align your code strictly with the tech stack of the project thats also attached
-  {tree}
-  {file_paths}
-  {file_contents}
-  {json_features}
-  {tech_stack}
+  Respository Structure: {tree}
+  Files to be editedL {file_paths}
+  File Contents: {file_contents}
+  Features: {json_features}
+  Tech Stack: {tech_stack}
+  Readme Summary: {readme_summary}
 
 readme: |
   It's a code helper?
