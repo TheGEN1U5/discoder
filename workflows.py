@@ -22,6 +22,18 @@ def discussion_summariser(discussion:str='', readme_summary:str='', tech_stack:s
         op_summary = op_summary.split('**Summary:** ')[1]
     elif(op_summary.strip().startswith('**Summary**: ')):
         op_summary = op_summary.split('**Summary**: ')[1]
+    elif(op_summary.strip().startswith('Summary: \n')):
+        op_summary = op_summary.split('Summary: \n')[1]
+    elif(op_summary.strip().startswith('**Summary:** \n')):
+        op_summary = op_summary.split('**Summary:** \n')[1]
+    elif(op_summary.strip().startswith('**Summary**: \n')):
+        op_summary = op_summary.split('**Summary**: \n')[1]
+    elif(op_summary.strip().startswith('Summary:\n')):
+        op_summary = op_summary.split('Summary:\n')[1]
+    elif(op_summary.strip().startswith('**Summary:**\n')):
+        op_summary = op_summary.split('**Summary:**\n')[1]
+    elif(op_summary.strip().startswith('**Summary**:\n')):
+        op_summary = op_summary.split('**Summary**:\n')[1]
     
     op_summary = op_summary.lstrip()
     return tuple([op_dict, op_summary])
